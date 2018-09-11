@@ -1,26 +1,39 @@
 (function(window, undefined) {
-    var StringFormat = function() {
+    /**
+     * format string
+     * @returns {String}
+     * @example StringFormat.call('<div>{_ID_}</div>', {"_ID_": "1"}) => '<div>1</div>'
+     * @example StringFormat.call('<div>{0} {1}</div>', ['hello', 'world']) => '<div>hello world</div>'
+     */
+    function StringFormat() {
         if (arguments.length > 0) {
-            let result = this;
-            let format = arguments[0];
-            for (let key in format) {
-                let regex = new RegExp(`\\{${key}\\}`, 'g');
+            var result = this;
+            var format = arguments[0];
+            for (var key in format) {
+                var regex = new RegExp('\\{' + key + '\\}', 'g');
                 result = result.replace(regex, format[key]);
             }
             return result;
         } else {
             return this.toString();
         }
-    };
+    }
 
-    var Template = function(TAG, classes, TEXT) {
-        let Base = '<{TAG} {ID} class="{CLASSES}" style="{STYLE}" {EXTRA}>{TEXT}</{TAG}>';
+    /**
+     * get base html template
+     * @param  {String} TAG     [html tag]
+     * @param  {String} classes [html class]
+     * @param  {String} TEXT    [html content]
+     * @return {String}
+     */
+    function Template(TAG, CLASSES, TEXT) {
+        var Base = '<{TAG} {ID} class="{CLASSES}" style="{STYLE}" {EXTRA}>{TEXT}</{TAG}>';
         return StringFormat.call(Base, {
             TAG: TAG,
-            CLASSES: `${classes} {CLASS}`,
+            CLASSES: CLASSES + ' {CLASS}',
             TEXT: TEXT || '{TEXT}'
         });
-    };
+    }
 
     var Result = function(template) {
         this.template = template;
@@ -28,7 +41,7 @@
 
     Result.prototype = {
         id: function(id) {
-            return this.format('ID', `id="${id}"`);
+            return this.format('ID', 'id="' + id + '"');
         },
 
         class: function(className) {
@@ -36,10 +49,10 @@
         },
 
         style: function(styles) {
-            let style = '';
+            var style = '';
             if (typeof styles === 'object') {
-                for (let attr in styles) {
-                    style += `${attr}:${styles[attr]};`;
+                for (var attr in styles) {
+                    style += attr + ':' + styles[attr] + ';';
                 }
             } else {
                 style = styles;
@@ -48,35 +61,35 @@
         },
 
         data: function() {
-            let data = {};
-            let key = '';
+            var data = {};
+            var key = '';
             if (arguments.length == 2) {
                 key = arguments[0];
-                data[`data-${key}`] = arguments[1];
+                data['data-' + key] = arguments[1];
             } else {
                 for (key in arguments[0]) {
-                    data[`data-${key}`] = arguments[0][key];
+                    data['data-' + key] = arguments[0][key];
                 }
             }
             return this.attr(data);
         },
 
         attr: function(extras) {
-            let extra = '';
+            var extra = '';
             if (typeof extras === 'object') {
-                const arrExtras = [];
-                for (let attr in extras) {
-                    arrExtras.push(`${attr}="${extras[attr]}"`);
+                var arrExtras = [];
+                for (var attr in extras) {
+                    arrExtras.push(attr + '="' + extras[attr] + '"');
                 }
                 extra = arrExtras.join(' ');
             } else {
                 extra = extras;
             }
-            return this.format('EXTRA', `${extra} {EXTRA}`);
+            return this.format('EXTRA', extra + ' {EXTRA}');
         },
 
         config: function(config) {
-            for (let method in config) {
+            for (var method in config) {
                 if (typeof this[method] === 'function') {
                     this[method](config[method]);
                 }
@@ -85,10 +98,10 @@
         },
 
         format: function() {
-            let format = {};
+            var format = {};
             if (arguments.length == 2) {
-                let key = arguments[0];
-                let value = arguments[1];
+                var key = arguments[0];
+                var value = arguments[1];
                 format[key] = value;
             } else {
                 format = arguments[0];
@@ -112,9 +125,9 @@
 
     // bootstrap context
     function Context(htmlTag, contextTag, contextType, text, prefix) {
-        let className = `${contextTag}-${contextType}`;
+        var className = contextTag + '-' + contextType;
         if (prefix) {
-            className = `${contextTag} ${className}`;
+            className = contextTag + ' ' + className;
         }
         return Template(htmlTag, className, text);
     }
@@ -122,17 +135,17 @@
     // public components
     var Components = {
         Label: function(text) {
-            let template = Context('span', 'label', this.toString(), text, true);
+            var template = Context('span', 'label', this.toString(), text, true);
             return new Result(template);
         },
         Button: function(text) {
-            let template = Context('button', 'btn', this.toString(), text, true);
+            var template = Context('button', 'btn', this.toString(), text, true);
             return new Result(template);
         },
-        AButton: function(text, href = 'javascript:') {
-            let template = Context('a', 'btn', this.toString(), text, true);
+        AButton: function(text, href) {
+            var template = Context('a', 'btn', this.toString(), text, true);
             return new Result(template).attr({
-                href
+                href: href || 'javascript:'
             });
         }
     };
