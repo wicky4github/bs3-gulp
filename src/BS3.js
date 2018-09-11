@@ -48,6 +48,8 @@
     };
 
     Result.prototype = {
+        name: 'Result',
+
         id: function(id) {
             return this.format('ID', 'id="' + id + '"');
         },
