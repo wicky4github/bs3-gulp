@@ -3,10 +3,14 @@
   "version": "1.0.0",
   "description": "bs3.js",
   "main": "bs3.js",
-  "scripts": {},
+  "scripts": {
+    "start": "gulp serve",
+    "build": "gulp"
+  },
   "author": "Wicky",
   "license": "ISC",
   "devDependencies": {
+    "browser-sync": "^2.24.7",
     "gulp": "^3.9.1",
     "gulp-rename": "^1.4.0",
     "gulp-uglify": "^3.0.1",
