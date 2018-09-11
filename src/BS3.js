@@ -1,6 +1,9 @@
-(function(window, undefined) {
+;(function(window, undefined) {
+    // global object
+    var BS3 = {};
+
     /**
-     * format string
+     * string format prototype
      * @returns {String}
      * @example StringFormat.call('<div>{_ID_}</div>', {"_ID_": "1"}) => '<div>1</div>'
      * @example StringFormat.call('<div>{0} {1}</div>', ['hello', 'world']) => '<div>hello world</div>'
@@ -35,6 +38,11 @@
         });
     }
 
+    /**
+     * Class Result
+     * html string formatter
+     * @param {[string]} template [A string created from Template function]
+     */
     var Result = function(template) {
         this.template = template;
     };
@@ -153,9 +161,6 @@
     // public methods
     var Methods = ['success', 'warning', 'danger', 'default', 'info', 'primary'];
 
-    // global object
-    var BS3 = {};
-
     // batch registration
     for (var component in Components) {
         BS3[component] = {};
@@ -169,5 +174,27 @@
         }
     }
 
+    // DOM
+
+    function getResult(template, formatter) {
+        var result = new Result(template);
+        if (typeof formatter === 'function') {
+            formatter(result);
+        }
+        return result.toString();
+    }
+
+    var DOM = function(arrEle) {
+        return arrEle.map(function(ele) {
+            if (typeof ele.children === 'object') {
+                return getResult(Template(ele.tag, '', DOM(ele.children) || ele.text || ''), ele.formatter);
+            } else {
+                return getResult(Template(ele.tag, '', ele.text || ''), ele.formatter);
+            }
+        }).join('\r\n');
+    };
+
+    BS3.DOM = DOM;
+
     window.BS3 = BS3;
-})(window)
+}(window));

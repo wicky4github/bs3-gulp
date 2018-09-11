@@ -1,9 +1,9 @@
-## BS3
+## BS3.js
 
 ### Using
 > BS3[Component][Method](arg1[, arg2[, ...argN]])[EX]
 ```
-    // button.__proto__.constructor.name == "Result"
+    // button.__proto__.name == "Result"
     var button = BS3.AButton.default('Google', 'https://www.google.com/')
     document.body.innerHTML = button
 ```
@@ -90,12 +90,12 @@
       .attr({'baz': 'qux'})
 ```
 
-## HTML
+## BS3.DOM
 
 ### Using
-> HTML(array config)
+> BS3.DOM(array config)
 ```
-  var divs = HTML([{
+  var divs = BS3.DOM([{
     // base using
     tag: "div",
     text: "div 1"
