@@ -130,11 +130,11 @@
 {
   tag: "",                       // @required [string] tag of the element
   text: "",                      // @optional [string] text of the tag
-  formatter: function(Result) {  // @optional [function] render attributes by **Result** Object
+  formatter: function(Result) {  // @optional [function] render attributes by [object Result]
     // must return [object String] or [object Result]
     return Result;
   },
-  children: []                   // @optional [array] structure as same as the argument of "HTML(array config)".
+  children: []                   // @optional [array] structure as same as the argument of "BS3.DOM(array config)".
 }
 ```
 >> If length of "chilren" value equals 0, "text" value will works. Otherwise "children" value will cover "text" value
