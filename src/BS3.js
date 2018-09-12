@@ -1,4 +1,5 @@
-;(function(window, undefined) {
+;
+(function(window, undefined) {
     // global object
     var BS3 = {};
 
@@ -22,6 +23,8 @@
         }
     }
 
+    var SingleTags = ['br', 'hr', 'area', 'base', 'img', 'input', 'link', 'meta', 'basefont', 'param', 'col', 'frame', 'embed'];
+
     /**
      * get base html template
      * @param  {String} TAG     [html tag]
@@ -29,26 +32,66 @@
      * @param  {String} TEXT    [html content]
      * @return {String}
      */
-    function Template(TAG, CLASSES, TEXT) {
-        var Base = '<{TAG} {ID} class="{CLASSES}" style="{STYLE}" {EXTRA}>{TEXT}</{TAG}>';
+    function Template(TAG, TEXT) {
+        if (SingleTags.indexOf(TAG) >= 0) {
+            var Base = '<{TAG} {ID} class="{CLASS}" style="{STYLE}" {EXTRA} />';
+        } else {
+            var Base = '<{TAG} {ID} class="{CLASS}" style="{STYLE}" {EXTRA}>{TEXT}</{TAG}>';
+        }
         return StringFormat.call(Base, {
             TAG: TAG,
-            CLASSES: CLASSES + ' {CLASS}',
-            TEXT: TEXT || '{TEXT}'
+            TEXT: TEXT || '',
         });
     }
 
+
     /**
-     * Class Result
-     * html string formatter
-     * @param {[string]} template [A string created from Template function]
+     * createElement
+     * @param  {[Object]} config
+     * @return {[object Element]}
      */
-    var Result = function(template) {
+    function createElement(config) {
+        if (Array.isArray(config.children) && config.children.length > 0) {
+            var template = Template(config.tag, getChildrenText(config.children, config.text));
+        } else {
+            var template = Template(config.tag, config.text || '');
+        }
+        var element = new Element(template);
+        if (typeof config.formatter === 'function') {
+            config.formatter(element);
+        }
+        return element;
+    }
+
+    /**
+     * getChildrenText
+     * @param  [Array] children array contains [object String] or [object Element]
+     * @return [String]
+     */
+    function getChildrenText(children, text) {
+        var childrenText = '';
+        for (var i = 0; i < children.length; i++) {
+            if (children[i].__proto__.constructor.name === 'Object' && children[i].tag) {
+                childrenText += createElement(children[i]);
+            } else {
+                childrenText += children[i];
+            }
+        }
+        return childrenText || text || '';
+    }
+
+
+    /**
+     * Class Element
+     * @describe html string formatter
+     * @param [String] template [object String] created from Template function
+     */
+    var Element = function(template) {
         this.template = template;
     };
 
-    Result.prototype = {
-        name: 'Result',
+    Element.prototype = {
+        name: 'Element',
 
         id: function(id) {
             return this.format('ID', 'id="' + id + '"');
@@ -101,7 +144,8 @@
         config: function(config) {
             for (var method in config) {
                 if (typeof this[method] === 'function') {
-                    this[method](config[method]);
+                    var args = config[method];
+                    this[method](args);
                 }
             }
             return this;
@@ -125,37 +169,55 @@
             this.id('').class('').style('').format('EXTRA', '');
             return this.template
                 .replace(/\s*id=""\s*/, ' ')
-                .replace(/class="\s+([^\s]+?)\s*"/, 'class="$1"')
-                .replace(/class="\s+"/, '')
+                .replace(/\s*class=""\s*/, ' ')
                 .replace(/\s*style=""\s*/, ' ')
                 .replace(/\s{2,}/g, ' ')
-                .replace(/\s+>/, '>');
+                .replace(/\s+([">])/g, '$1');
         }
     };
 
-    // bootstrap context
-    function Context(htmlTag, contextTag, contextType, text, prefix) {
-        var className = contextTag + '-' + contextType;
-        if (prefix) {
-            className = contextTag + ' ' + className;
-        }
-        return Template(htmlTag, className, text);
-    }
-
-    // public components
+    /**
+     * Bootstrap Components
+     * @describe every component function will return [object Element]
+     */
     var Components = {
         Label: function(text) {
-            var template = Context('span', 'label', this.toString(), text, true);
-            return new Result(template);
+            var type = this.toString()
+            return createElement({
+                tag: 'span',
+                text: text,
+                formatter: function(Element) {
+                    return Element.config({
+                        class: 'label label-' + type + ' {CLASS}'
+                    });
+                }
+            });
         },
         Button: function(text) {
-            var template = Context('button', 'btn', this.toString(), text, true);
-            return new Result(template);
+            var type = this.toString();
+            return createElement({
+                tag: 'button',
+                text: text,
+                formatter: function(Element) {
+                    return Element.config({
+                        class: 'btn btn-' + type + ' {CLASS}'
+                    });
+                }
+            });
         },
         AButton: function(text, href) {
-            var template = Context('a', 'btn', this.toString(), text, true);
-            return new Result(template).attr({
-                href: href || 'javascript:'
+            var type = this.toString();
+            return createElement({
+                tag: 'button',
+                text: text,
+                formatter: function(Element) {
+                    return Element.config({
+                        class: 'btn btn-' + type + ' {CLASS}',
+                        attr: {
+                            href: href || 'javascript:'
+                        }
+                    });
+                }
             });
         }
     };
@@ -176,27 +238,63 @@
         }
     }
 
-    // DOM
-
-    function getResult(template, formatter) {
-        var result = new Result(template);
-        if (typeof formatter === 'function') {
-            formatter(result);
-        }
-        return result.toString();
-    }
-
-    var DOM = function(arrEle) {
-        return arrEle.map(function(ele) {
-            if (typeof ele.children === 'object') {
-                return getResult(Template(ele.tag, '', DOM(ele.children) || ele.text || ''), ele.formatter);
-            } else {
-                return getResult(Template(ele.tag, '', ele.text || ''), ele.formatter);
+    BS3.DOM = {
+        /**
+         * [render]
+         * @param  {[String|Array]} element innerHTML for dom
+         * @param  [Object]         dom     jquery or native DOM
+         * @void
+         */
+        render: function(element, dom) {
+            if (!dom) {
+                console.error('render container is null');
+                return;
             }
-        }).join('\r\n');
-    };
+            var html = element;
+            if (Array.isArray(element)) {
+                html = element.join('\r\n');
+            }
+            if (dom.__proto__.jquery) {
+                // jquery dom
+                if (dom.length) {
+                    dom.html(html);
+                } else {
+                    console.error('render container is null')
+                }
+            } else if (/HTML/.test(dom.__proto__.constructor.name)) {
+                // native dom
+                dom.innerHTML = html;
+            }
+        },
 
-    BS3.DOM = DOM;
+        /**
+         * [createElement]
+         * @param  [String] tag      tag of element
+         * @param  [Object] config   config for [object Element]
+         * @param  [Array]  children array contains [object String] or [object Element]
+         * @return [Element]
+         */
+        createElement: function(tag, config, children) {
+            if (arguments.length == 1 && Array.isArray(arguments[0])) {
+                // batch create
+                return arguments[0].map(createElement).join('\r\n');
+            } else {
+                if (!tag || tag.__proto__.constructor.name != 'String') {
+                    console.error('createElement needs tag parameter');
+                }
+                config = config || {};
+                children = children || [];
+                var eleConfig = {
+                    tag: tag,
+                    text: getChildrenText(children, config.text),
+                    formatter: function(Element) {
+                        return Element.config(config);
+                    }
+                };
+                return createElement(eleConfig).toString();
+            }
+        }
+    };
 
     window.BS3 = BS3;
 }(window));

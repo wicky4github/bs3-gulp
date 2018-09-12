@@ -11,7 +11,7 @@ gulp.task('js', cb => {
             gulp.src('src/bs3.js'),
             uglify({
                 mangle: {
-                    reserved: ['Result', 'DOM']
+                    reserved: ['Element', 'DOM']
                 }
             }),
             rename({
@@ -25,7 +25,7 @@ gulp.task('js', cb => {
 
 // reload browser
 gulp.task('html', () => {
-    return gulp.src('demo/*.html')
+    gulp.src('demo/*.html')
         .pipe(reload({
             stream: true
         }));
@@ -41,7 +41,8 @@ gulp.task('serve', ['html', 'js'], () => {
     });
 
     gulp.watch('src/*.js', ['js', 'html']);
-    gulp.watch('demo/*.html',['html']);
+    gulp.watch('demo/*.html', ['html']);
+    gulp.watch('draft/*.js', ['html'])
 });
 
 // default compile

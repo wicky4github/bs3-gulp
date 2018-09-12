@@ -1,17 +1,19 @@
-## BS3.js
+# BS3.js
+
+## BS3[Component]
 
 ### Using
 > BS3[Component][Method](arg1[, arg2[, ...argN]])[EX]
 ```
-    // button.__proto__.name == "Result"
+    // button.__proto__.name == "Element"
     var button = BS3.AButton.default('Google', 'https://www.google.com/')
     document.body.innerHTML = button
 ```
 
 ### Component
-* Label(text)
-* Button(text)
-* AButton(text, url)
+* Label(String text):Element
+* Button(String text):Element
+* AButton(String text, String url):Element
 
 ### Method
 * success
@@ -22,54 +24,54 @@
 * primary
 
 ### EX
-> API Reference of [object Result]
-* id(string id)
+> API Reference of [object Element]
+* id(String id)
 ```
     BS3.Label.primary('Primary').id('foo')
 ```
 
-* class(string name)
+* class(String name)
 ```
     BS3.Label.warning('Warning').class('bar')
 ```
 
-* class(array names)
+* class(Array names)
 
 ```
     BS3.Label.warning('Warning').class(['foo', 'bar'])
 ```
 
-* style(string style)
+* style(String style)
 ```
     BS3.Label.danger('Danger').style('font-size: 16px;')
 ```
 
-* style(array styles)
+* style(Array styles)
 ```
     BS3.Label.danger('Danger').style({'color': '#fff', 'background-color': '#000'})
 ```
 
-* data(string key, string value)
+* data(String key, String value)
 ```
     BS3.Label.default('Data').data('foo', 'bar')
 ```
 
-* data(object data)
+* data(Object data)
 ```
     BS3.Label.data('Data').data({'foo': 'bar', 'baz': 'qux'})
 ```
 
-* attr(string attr)
+* attr(String attr)
 ```
     BS3.Label.default('Default').attr('foo="bar"')
 ```
 
-* attr(object attr)
+* attr(Object attr)
 ```
     BS3.Label.default('Default').attr({'foo': 'bar', 'baz': 'qux'})
 ```
 
-* config(object config)
+* config(Object config)
 ```
     BS3.Label.default('Default').config({
         'id': 'id', 
@@ -93,48 +95,52 @@
 ## BS3.DOM
 
 ### Using
-> BS3.DOM(array config)
+> BS3.DOM[Method](arg1[, arg2[, ...argN]])
+
+### Method
+
+* createElement(String tag, Object props, Array children):String
+
+#### argument
+
+| name     |  type  | required | described             |
+| ----     |  ----  | -------- | ---------             |
+| tag      | String |   yes    | tag of element        |
+| props    | Object |          | attributes of element |
+| children | Array  |          | children of element   |
+
+> Props example
 ```
-  var divs = BS3.DOM([{
-    // base using
-    tag: "div",
-    text: "div 1"
-  }, {
-   // render attributes
-    tag: "div",
-    text: "div 2",
-    formatter: function(Result) {
-      return Result.id('div').class('div')
-    }
-  }, {
-   // render attributes and children
-    tag: "div",
-    formatter: function(Result) {
-      return Result.style({border: '1px solid red'})
+  {
+    text: "",
+    // value of below keys can refer to API of [object Element] 
+    class: "form-control",
+    style: "color: red",
+    attr: {
+      foo: 'bar'
     },
-    children: [{
-      tag: "p",
-      text: "paragraph 1"  
-    }, {
-      tag: "p",
-      text: "paragraph 2",
-      children: []
-    }]
-  }])
-  document.body.innerHTML = divs
+    data: {
+      baz: 'qux'
+    }
+  }
+```
+- If length of "chilren" value equals 0, "text" value will works. Otherwise "children" value will cover "text" value
+
+> Js example
+```
+  var div = BS3.DOM.createElement('div', {text: 'DIV', 'class': 'bg-info text-center'})
+  document.body.innerHTML = div
 ```
 
-### Config
-> Config is an ***array*** includes with at least one render config of element as described below
+* render(String html, Object dom):void
+
+> dom can be jQuery or HTML DOM, but you will get an error if you give an empty dom
 ```
-{
-  tag: "",                       // @required [string] tag of the element
-  text: "",                      // @optional [string] text of the tag
-  formatter: function(Result) {  // @optional [function] render attributes by [object Result]
-    // must return [object String] or [object Result]
-    return Result;
-  },
-  children: []                   // @optional [array] structure as same as the argument of "BS3.DOM(array config)".
-}
+  BS3.DOM.render(
+    BS3.DOM.createElement('div', {class: 'bg-success'}, [
+      BS3.DOM.createElement('p', {text: 'paragraph 1'}),
+      BS3.DOM.createElement('p', {text: 'paragraph 2', class: 'bg-danger'})
+    ]),
+    document.body
+  );
 ```
->> If length of "chilren" value equals 0, "text" value will works. Otherwise "children" value will cover "text" value

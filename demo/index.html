@@ -1,9 +1,9 @@
 <!doctype html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Demo</title>
     <!-- bootstrap3 -->
@@ -11,13 +11,17 @@
     <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
     <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="../src/bs3.js"></script>
 </head>
+
 <body>
+    <h1>BS3.js</h1>
     <div id="div"></div>
-    <script src="../dist/bs3.min.js"></script>
-    <script>
-        document.getElementById('div').innerHTML = BS3.Label.success('Success');
-        $('#div').append(BS3.Button.warning('Warning').class(['foo', 'bar']).attr({'type': 'submit'}).toString());
-    </script>
+    <script src="../draft/bs3.js"></script>
+    <hr>
+    <h1>BS3.DOM</h1>
+    <div id="dom"></div>
+    <script src="../draft/dom.v2.js"></script>
 </body>
+
 </html>
