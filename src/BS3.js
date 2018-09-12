@@ -80,7 +80,6 @@
         return childrenText || text || '';
     }
 
-
     /**
      * Class Element
      * @describe html string formatter
@@ -208,7 +207,7 @@
         AButton: function(text, href) {
             var type = this.toString();
             return createElement({
-                tag: 'button',
+                tag: 'a',
                 text: text,
                 formatter: function(Element) {
                     return Element.config({
