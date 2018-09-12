@@ -1,5 +1,4 @@
-;
-(function(window, undefined) {
+;(function(window, undefined) {
     // global object
     var BS3 = {};
 
