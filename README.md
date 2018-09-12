@@ -121,7 +121,7 @@
 
 #### argument
 
-| name     |  type  | required | described             |
+| name     |  type  | required | describe              |
 | ----     |  ----  | -------- | ---------             |
 | tag      | String |   yes    | tag of element        |
 | props    | Object |          | attributes of element |
