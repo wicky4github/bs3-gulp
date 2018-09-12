@@ -4,7 +4,7 @@
   "description": "bs3.js",
   "main": "bs3.js",
   "scripts": {
-    "start": "gulp serve",
+    "dev": "gulp serve",
     "build": "gulp"
   },
   "author": "Wicky",

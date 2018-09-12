@@ -1,6 +1,9 @@
-;(function(window, undefined) {
+;
+(function(window, undefined) {
     // global object
-    var BS3 = {};
+    var BS3 = {
+        annoymousEvents: {}
+    };
 
     /**
      * string format prototype
@@ -123,6 +126,40 @@
                 }
             }
             return this.attr(data);
+        },
+
+        on: function() {
+            // concrete operation
+            function on(eventType, fn) {
+                if (typeof fn === 'function') {
+                    var callback = fn;
+                    var name = '_' + new Date().getTime();
+                    BS3.annoymousEvents[name] = callback;
+                    fn = 'BS3.annoymousEvents.' + name + '()';
+                }
+                // check " using correctly
+                var marksMatch = fn.match(/"/g);
+                var marks = marksMatch ? marksMatch.length : 0;
+                var validMarksMatch = fn.match(/\\\"/g);
+                var validMarks = validMarksMatch ? validMarksMatch.length : 0;
+                if (marks > 0 && marks != validMarks) {
+                    throw new Error('Invalid on' + eventType + ' function because of using ["] without adding slashes correctly. You should add slashes like [\\\\\\"] which is not as good as using [\']');
+                }
+                return this.attr('on' + eventType + '="' + fn + '"');
+            }
+            // check arugments
+            if (arguments.length == 2) {
+                var eventType = arguments[0];
+                var fn = arguments[1];
+                return on.apply(this, [eventType, fn]);
+            } else {
+                var events = arguments[0];
+                for (var eventType in events) {
+                    var fn = events[eventType];
+                    on.apply(this, [eventType, fn]);
+                }
+                return this;
+            }
         },
 
         attr: function(extras) {

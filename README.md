@@ -46,7 +46,7 @@
     BS3.Label.danger('Danger').style('font-size: 16px;')
 ```
 
-* style(Array styles)
+* style(Object styles)
 ```
     BS3.Label.danger('Danger').style({'color': '#fff', 'background-color': '#000'})
 ```
@@ -59,6 +59,24 @@
 * data(Object data)
 ```
     BS3.Label.data('Data').data({'foo': 'bar', 'baz': 'qux'})
+```
+
+* on(String eventType, String|Function fn)
+```
+    // If typeof === 'String', it's better to use "" to wrap it, otherwise you may code like this 'alert(\\\"Default\\\")' to make it work
+    BS3.Label.default('Default').on('click', "alert('Default')")
+```
+
+* on(Object events)
+```
+    BS3.Label.default('Default').on({
+      // value is String
+      mouseover: "console.log('Mouse Over')",
+      // value is Function
+      click: function() {
+          alert('Click')
+      }
+    })
 ```
 
 * attr(String attr)

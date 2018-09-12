@@ -12,16 +12,102 @@
     <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
     <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="../src/bs3.js"></script>
+    <style>
+        .row {padding: 0 10px;}
+        .col {border: 1px solid #ddd; padding: 10px;}
+        .col p {font-size: 16px;}
+        .col>p+* {border: 1px solid #ddd;display: block;}
+        .left {float: left;}
+        .left>p+* {min-height: 80px;}
+        .right>p+* {min-height: 80px;padding: 10px;}
+    </style>
 </head>
 
 <body>
-    <h1>BS3.js</h1>
-    <div id="div"></div>
-    <script src="../draft/bs3.js"></script>
-    <hr>
-    <h1>BS3.DOM</h1>
-    <div id="dom"></div>
-    <script src="../draft/dom.v2.js"></script>
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <h4 class="text-center">BS3[Component]</h4>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col left" style="width: 750px;">
+                    <p>code</p>
+                    <pre>
+var labels  = []
+labels.push(BS3.Label.primary('Primary'))
+labels.push(BS3.Label.info('Info'))
+labels.push(BS3.Label.default('Default'))
+labels.push(BS3.Label.success('Success'))
+labels.push(BS3.Label.warning('Warning'))
+labels.push(BS3.Label.danger('Danger'))
+document.getElementById('1').innerHTML = labels.join('&nbsp;')
+
+var buttons  = []
+buttons.push(BS3.Button.primary('Primary').data('foo', 'bar'))
+buttons.push(BS3.Button.info('Info').data({foo: 'bar', baz: 'qux'}))
+buttons.push(BS3.Button.default('Default').on('click', "alert('Default');"))
+buttons.push(BS3.Button.success('Success').attr('type="submit"'))
+buttons.push(BS3.AButton.warning('Warning', 'https://v3.bootcss.com').attr({target: '_blank'}))
+buttons.push(BS3.AButton.danger('Danger').config({
+    id: 'DangerButton', 
+    class: 'btn-lg',
+    style: {'margin-top': '-10px;'},
+    data: {foo: 'bar'},
+    attr: {'baz': 'qux'},
+    on: {
+        mouseover: "console.log('Mouse Over')",
+        click: function() {
+            alert('Danger Button')
+        }
+    }
+}))
+document.getElementById('Button').innerHTML = buttons.join('&nbsp;')
+                    </pre>
+                </div>
+                <div class="col right" style="margin-left: 780px;">
+                    <p>result</p>
+                    <div id="1">
+                        <h3>Label</h3>
+                        <div id="Label"></div>
+                        <script>
+                            var labels  = []
+                            labels.push(BS3.Label.primary('Primary'))
+                            labels.push(BS3.Label.info('Info').id('InfoLabel'))
+                            labels.push(BS3.Label.default('Default').class('class-1'))
+                            labels.push(BS3.Label.success('Success').class(['class-2', 'class-3']))
+                            labels.push(BS3.Label.warning('Warning').style('font-size: 16px;'))
+                            labels.push(BS3.Label.danger('Danger').style({'font-size': '20px'}))
+                            document.getElementById('Label').innerHTML = labels.join('&nbsp;')
+                        </script>
+                        <h3>Button</h3>
+                        <div id="Button"></div>
+                        <script>
+                            var buttons  = []
+                            buttons.push(BS3.Button.primary('Primary').data('foo', 'bar'))
+                            buttons.push(BS3.Button.info('Info').data({foo: 'bar', baz: 'qux'}))
+                            buttons.push(BS3.Button.default('Default').on('click', "alert('Default');"))
+                            buttons.push(BS3.Button.success('Success').attr('type="submit"'))
+                            buttons.push(BS3.AButton.warning('Warning', 'https://v3.bootcss.com').attr({target: '_blank'}))
+                            buttons.push(BS3.AButton.danger('Danger').config({
+                                id: 'DangerButton', 
+                                class: 'btn-lg',
+                                style: {'margin-top': '-10px;'},
+                                data: {foo: 'bar'},
+                                attr: {'baz': 'qux'},
+                                on: {
+                                    mouseover: "console.log('Mouse Over')",
+                                    click: function() {
+                                        alert('Danger Button')
+                                    }
+                                }
+                            }))
+                            document.getElementById('Button').innerHTML = buttons.join('&nbsp;')
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>
