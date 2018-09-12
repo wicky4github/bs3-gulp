@@ -124,7 +124,7 @@
     }
   }
 ```
-- If length of "chilren" value equals 0, "text" value will works. Otherwise "children" value will cover "text" value
+If length of "chilren" value equals 0, "text" value will works. Otherwise "children" value will cover "text" value
 
 > Js example
 ```
