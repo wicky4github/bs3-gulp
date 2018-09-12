@@ -245,8 +245,7 @@
          */
         render: function(element, dom) {
             if (!dom) {
-                console.error('render container is null');
-                return;
+                throw 'render container is null';
             }
             var html = element;
             if (Array.isArray(element)) {
@@ -257,7 +256,7 @@
                 if (dom.length) {
                     dom.html(html);
                 } else {
-                    console.error('render container is null')
+                    throw 'render container is null';
                 }
             } else if (/HTML/.test(dom.__proto__.constructor.name)) {
                 // native dom
@@ -278,7 +277,7 @@
                 return arguments[0].map(createElement).join('\r\n');
             } else {
                 if (!tag || tag.__proto__.constructor.name != 'String') {
-                    console.error('createElement needs tag parameter');
+                    throw 'createElement needs tag parameter';
                 }
                 config = config || {};
                 children = children || [];
@@ -295,4 +294,4 @@
     };
 
     window.BS3 = BS3;
-}(window));
+}(window))
