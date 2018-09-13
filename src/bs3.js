@@ -1,5 +1,6 @@
-;
-(function(window, undefined) {
+!(function(window, undefined) {
+	"use strict";
+	
     // global object
     var BS3 = {
         annoymousEvents: {}
