@@ -1,6 +1,6 @@
-!(function(window, undefined) {
+(function(window, undefined) {
 	"use strict";
-	
+
     // global object
     var BS3 = {
         annoymousEvents: {}
@@ -332,4 +332,4 @@
     };
 
     window.BS3 = BS3;
-}(window))
+}(window));
